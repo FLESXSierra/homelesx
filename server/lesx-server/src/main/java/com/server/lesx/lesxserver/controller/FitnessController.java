@@ -22,7 +22,7 @@ public class FitnessController {
     public ResponseEntity<Fitness> createFitnessRegistry(@RequestBody Fitness fitness) {
         Fitness save = fitnessImp.createFitnessRegistry(fitness);
         if (save != null) {
-            return new ResponseEntity(fitness, HttpStatus.CREATED);
+            return new ResponseEntity(save, HttpStatus.CREATED);
         }
         return ResponseEntity.internalServerError().build();
     }

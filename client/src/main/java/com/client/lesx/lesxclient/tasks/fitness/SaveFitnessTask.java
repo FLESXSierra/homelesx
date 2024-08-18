@@ -13,11 +13,11 @@ import java.util.function.Consumer;
 
 import static com.client.lesx.lesxclient.constants.ServerURLs.URL_CREATE_FITNESS;
 
-public class SaveFitnessTask extends ThreeStepsServerTask<List<Fitness>> implements HttpCoreHeadersAndBody {
+public class SaveFitnessTask extends ThreeStepsServerTask<Fitness> implements HttpCoreHeadersAndBody {
 
-    List<Fitness> toSave;
+    Fitness toSave;
 
-    public SaveFitnessTask(Consumer<List<Fitness>> success, List<Fitness> toSave) {
+    public SaveFitnessTask(Consumer<Fitness> success, Fitness toSave) {
         super(success);
         this.toSave = toSave;
     }
@@ -36,7 +36,7 @@ public class SaveFitnessTask extends ThreeStepsServerTask<List<Fitness>> impleme
     }
 
     @Override
-    public List<Fitness> convertResponse(CloseableHttpResponse response) {
-        return ParseEntityUtil.convertHttpEntityIntoFitness(response.getEntity());
+    public Fitness convertResponse(CloseableHttpResponse response) {
+        return ParseEntityUtil.convertHttpEntityIntoClass(response.getEntity(), Fitness.class);
     }
 }

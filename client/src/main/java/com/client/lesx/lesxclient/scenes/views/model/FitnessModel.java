@@ -9,13 +9,19 @@ import java.time.LocalDate;
 
 import static com.client.lesx.lesxclient.scenes.views.model.builder.ModelObjectsFactory.buildFitnessItemFromModel;
 
-@NoArgsConstructor
 public class FitnessModel {
 
     private Integer id;
     private DoubleProperty weight;
     private BooleanProperty workoutDay;
     private ObjectProperty<LocalDate> date;
+
+    public FitnessModel() {
+        id = -1;
+        this.weight = new SimpleDoubleProperty(0);
+        this.workoutDay = new SimpleBooleanProperty(false);
+        this.date = new SimpleObjectProperty<>(LocalDate.now());
+    }
 
     public FitnessModel(Fitness fitness) {
         this.id = fitness.getId();
