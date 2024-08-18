@@ -1,23 +1,24 @@
 package com.client.lesx.lesxclient.tasks.fitness;
 
 import com.client.lesx.lesxclient.tasks.core.ThreeStepsServerTask;
+import com.client.lesx.lesxclient.tasks.core.http.HttpCoreHeadersAndBody;
 import com.client.lesx.lesxclient.tasks.util.ParseEntityUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-import static com.client.lesx.lesxclient.constants.ServerURLs.BASE_ID_TOKEN;
-import static com.client.lesx.lesxclient.constants.ServerURLs.URL_GET_FITNESS;
+import static com.client.lesx.lesxclient.constants.ServerURLs.URL_DELETE_ALL_FITNESS;
 
-public class DeleteFitnessTask extends ThreeStepsServerTask {
+public class DeleteFitnessTask extends ThreeStepsServerTask implements HttpCoreHeadersAndBody {
 
-    private String id;
+    private List<Integer> ids;
 
-    public DeleteFitnessTask(String id, Consumer<Boolean> success){
+    public DeleteFitnessTask(List<Integer> ids, Consumer<Boolean> success) {
         super(success);
-        this.id = id;
+        this.ids = ids;
     }
 
     @Override
@@ -27,7 +28,10 @@ public class DeleteFitnessTask extends ThreeStepsServerTask {
 
     @Override
     public HttpRequestBase getHttpRequest() {
-        return new HttpDelete(URL_GET_FITNESS.replace(BASE_ID_TOKEN, id));
+        HttpPost httpPost =  new HttpPost(URL_DELETE_ALL_FITNESS);
+        addHeadersToHttp(httpPost);
+        addBodyToHttp(httpPost, ids);
+        return httpPost;
     }
 
     @Override
