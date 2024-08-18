@@ -1,8 +1,12 @@
 package com.client.lesx.lesxclient.scenes.controller.main;
 
+import com.client.lesx.lesxclient.constants.EActions;
+import com.client.lesx.lesxclient.constants.EModelItems;
 import com.client.lesx.lesxclient.scenes.controller.base.DefaultController;
+import com.client.lesx.lesxclient.scenes.utils.SceneUtils;
 import com.client.lesx.lesxclient.scenes.views.DataViews;
 import com.client.lesx.lesxclient.scenes.views.model.FitnessModel;
+import com.client.lesx.lesxclient.scenes.views.objects.Fitness;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -10,11 +14,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import lombok.extern.log4j.Log4j2;
+import org.controlsfx.control.PropertySheet;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.client.lesx.lesxclient.constants.ColumnNamesConstants.*;
+import static com.client.lesx.lesxclient.scenes.views.model.builder.ModelObjectsFactory.convertFitnessFromItemsToDao;
 
+@Log4j2
 public class MainMenuController implements DefaultController {
 
     @FXML
@@ -41,12 +50,45 @@ public class MainMenuController implements DefaultController {
         initializeTable();
         bindDataViewProgress();
         bindMenuBarFromTableSelector();
+        addListenerToMenuItems();
+    }
+
+    private void addListenerToMenuItems() {
+        edit.setOnAction(action -> updateFitnessObject());
+    }
+
+    private void updateFitnessObject() {
+        SceneUtils.showPropertyDialog(table.getSelectionModel()
+                        .getSelectedItem()
+                        .getAsFitnessItem()
+                        .getAllProperties(), EActions.UPDATE, EModelItems.FITNESS,
+                items -> convertAndSave(items));
+    }
+
+    private void convertAndSave(List<PropertySheet.Item> items) {
+        Fitness fitnessItem = convertFitnessFromItemsToDao(items);
+        DataViews.updateFitnessValue(fitnessItem, fitness -> updateFitnessInTable(fitness));
+    }
+
+    private void updateFitnessInTable(Fitness fitness) {
+        FitnessModel fitnessModel = table.getItems().stream()
+                .filter(item -> item.getId().equals(fitness.getId()))
+                .findAny()
+                .orElse(null);
+        if(fitnessModel != null) {
+            fitnessModel.setWeight(fitness.getWeight());
+            fitnessModel.setDate(fitness.getDate());
+            fitnessModel.setWorkoutDay(fitness.isWorkoutDay());
+        } else {
+            log.error(String.format("Not possible to update object [%s]", fitness));
+        }
     }
 
     private void bindMenuBarFromTableSelector() {
-        table.selectionModelProperty().addListener(obs -> observableForSelectedItem());
+        table.getSelectionModel().selectedItemProperty().addListener(obs -> observableForSelectedItem());
         edit.disableProperty().bind(Bindings.not(isItemInTableSelected));
-        delete.disableProperty().bind(isItemInTableSelected);
+        delete.disableProperty().bind(Bindings.not(isItemInTableSelected));
+        table.getSelectionModel().clearSelection();
     }
 
     private void observableForSelectedItem() {
@@ -85,5 +127,15 @@ public class MainMenuController implements DefaultController {
     @Override
     public String getWindowsName() {
         return null;
+    }
+
+    @Override
+    public void afterInitialize() {
+        // Do nothing
+    }
+
+    @Override
+    public BooleanProperty getCloseProperty() {
+        return new SimpleBooleanProperty();
     }
 }

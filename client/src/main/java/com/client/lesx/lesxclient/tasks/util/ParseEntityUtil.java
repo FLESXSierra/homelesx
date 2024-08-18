@@ -4,6 +4,8 @@ import com.client.lesx.lesxclient.scenes.views.objects.Fitness;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.http.HttpEntity;
 
 import java.io.IOException;
@@ -12,13 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParseEntityUtil {
 
     private static final Logger LOGGER = Logger.getLogger(ParseEntityUtil.class.getName());
-
-    private ParseEntityUtil() {
-        // Hide Constructor
-    }
 
     public static <T> T convertHttpEntityIntoClass(HttpEntity entity, Class<T> clazz) {
         try {

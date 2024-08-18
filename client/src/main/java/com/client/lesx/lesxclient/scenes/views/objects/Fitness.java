@@ -1,7 +1,12 @@
 package com.client.lesx.lesxclient.scenes.views.objects;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class Fitness {
 
     public Integer id;
@@ -9,35 +14,4 @@ public class Fitness {
     public boolean workoutDay;
     public LocalDate date;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public void setWorkoutDay(boolean workoutDay) {
-        this.workoutDay = workoutDay;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public boolean isWorkoutDay() {
-        return workoutDay;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
 }
