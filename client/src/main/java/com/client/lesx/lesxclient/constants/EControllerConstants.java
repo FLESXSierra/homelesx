@@ -1,7 +1,8 @@
 package com.client.lesx.lesxclient.constants;
 
 public enum EControllerConstants {
-    DESCRIPTION,
-    WINDOWS_NAME,
-    PROPERTIES
+    ON_SAVE_ACTION,
+    PROPERTIES,
+    ACTION,
+    FROM_ITEM
 }

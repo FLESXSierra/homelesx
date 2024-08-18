@@ -1,6 +1,7 @@
 package com.client.lesx.lesxclient.tasks.core;
 
 import javafx.concurrent.Task;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -8,6 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.util.function.Consumer;
 
+@Log4j2
 public abstract class ThreeStepsServerTask<T> extends Task<T> {
 
     private final Consumer<T> success;
@@ -34,7 +36,7 @@ public abstract class ThreeStepsServerTask<T> extends Task<T> {
             updateMessage(messages[2]);
             return convertResponse(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while executing ThreeStepsServerTask", e);
             updateMessage(messages[3]);
             updateProgress(-1,3);
             throw e;

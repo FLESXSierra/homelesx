@@ -3,10 +3,12 @@ package com.client.lesx.lesxclient.scenes.controller;
 import com.client.lesx.lesxclient.scenes.utils.SceneUtils;
 import com.client.lesx.lesxclient.tasks.core.HealthCheckServerTask;
 import javafx.fxml.FXML;
+import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.StatusBar;
 
 import java.io.IOException;
 
+@Log4j2
 public class MainController {
     @FXML
     private StatusBar statusBar;
@@ -24,7 +26,7 @@ public class MainController {
         try {
             SceneUtils.setMainMenuRootOnScene();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error while setting scene from main manu", e);
             statusBar.progressProperty().unbind();
             statusBar.textProperty().unbind();
             statusBar.setProgress(-1);

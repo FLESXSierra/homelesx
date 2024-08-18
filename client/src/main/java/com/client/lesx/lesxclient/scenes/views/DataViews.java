@@ -72,10 +72,10 @@ public class DataViews {
         task.run();
     }
 
-    public static Fitness updateFitnessValue(Fitness fitness) {
+    public static Fitness updateFitnessValue(Fitness fitness, Consumer<Fitness> onSave) {
         instance.doublePropertyProperty().unbind();
         instance.stringPropertyProperty().unbind();
-        UpdateFitnessTask task = new UpdateFitnessTask(null, fitness);
+        UpdateFitnessTask task = new UpdateFitnessTask(onSave, fitness);
         instance.doublePropertyProperty().bind(task.progressProperty());
         instance.stringPropertyProperty().bind(task.messageProperty());
         task.run();
