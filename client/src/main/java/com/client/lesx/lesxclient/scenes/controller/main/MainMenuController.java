@@ -3,6 +3,7 @@ package com.client.lesx.lesxclient.scenes.controller.main;
 import com.client.lesx.lesxclient.constants.EActions;
 import com.client.lesx.lesxclient.constants.EModelItems;
 import com.client.lesx.lesxclient.scenes.controller.base.DefaultController;
+import com.client.lesx.lesxclient.scenes.utils.NamesMapUtils;
 import com.client.lesx.lesxclient.scenes.utils.SceneUtils;
 import com.client.lesx.lesxclient.scenes.views.DataViews;
 import com.client.lesx.lesxclient.scenes.views.model.FitnessModel;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.client.lesx.lesxclient.constants.ColumnNamesConstants.*;
+import static com.client.lesx.lesxclient.constants.NameIdConstants.*;
 import static com.client.lesx.lesxclient.scenes.views.model.builder.ModelObjectsFactory.convertFitnessFromItemsToDao;
 
 @Log4j2
@@ -43,6 +45,7 @@ public class MainMenuController implements DefaultController {
 
     private static ObservableList<FitnessModel> fitnessList = FXCollections.observableArrayList();
     private BooleanProperty isItemInTableSelected = new SimpleBooleanProperty(Boolean.FALSE, "isItemInTableSelected");
+    private BooleanProperty isBulkItemInTableSelected = new SimpleBooleanProperty(Boolean.FALSE, "isItemInTableSelected");
 
     @FXML
     public void initialize() {
@@ -56,6 +59,7 @@ public class MainMenuController implements DefaultController {
     private void addListenerToMenuItems() {
         edit.setOnAction(action -> updateFitnessObject());
         add.setOnAction(action -> addNewFitnessObject());
+        delete.setOnAction(action -> deleteFitnessObject());
     }
 
     private void addNewFitnessObject() {
@@ -73,6 +77,34 @@ public class MainMenuController implements DefaultController {
                         .getAsFitnessItem()
                         .getAllProperties(), EActions.UPDATE, EModelItems.FITNESS,
                 items -> convertAndUpdate(items));
+    }
+
+    private void deleteFitnessObject() {
+        List<Integer> ids = table.getSelectionModel()
+                .getSelectedItems()
+                .stream()
+                .map(FitnessModel::getId)
+                .collect(Collectors.toList());
+        ButtonType ok = new ButtonType(NamesMapUtils.getStringValueFromMap(OK));
+        ButtonType cancel = new ButtonType(NamesMapUtils.getStringValueFromMap(CANCEL));
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_DELETE_TITLE));
+        alert.setHeaderText(String.format(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_DELETE_DESCRIPTION), EModelItems.FITNESS, ids));
+        alert.getButtonTypes()
+                .clear();
+        alert.getButtonTypes()
+                .addAll(ok, cancel);
+        ButtonType result = alert.showAndWait()
+                .orElse(null);
+        if (ok.equals(result)) {
+            DataViews.deleteFitnessByIds(ids, succeeded -> removeFromList(succeeded, ids));
+        }
+    }
+
+    private void removeFromList(Boolean succeeded, List<Integer> ids) {
+        if(succeeded) {
+            fitnessList.removeIf(item -> ids.contains(item.getId()));
+        }
     }
 
     private void convertAndSave(List<PropertySheet.Item> items) {
@@ -101,7 +133,7 @@ public class MainMenuController implements DefaultController {
 
     private void bindMenuBarFromTableSelector() {
         table.getSelectionModel().selectedItemProperty().addListener(obs -> observableForSelectedItem());
-        edit.disableProperty().bind(Bindings.not(isItemInTableSelected));
+        edit.disableProperty().bind(Bindings.not(isItemInTableSelected).or(isBulkItemInTableSelected));
         delete.disableProperty().bind(Bindings.not(isItemInTableSelected));
         table.getSelectionModel().clearSelection();
     }
@@ -109,6 +141,7 @@ public class MainMenuController implements DefaultController {
     private void observableForSelectedItem() {
         isItemInTableSelected.set(table.getSelectionModel()
                 .getSelectedItem() != null);
+        isBulkItemInTableSelected.set(table.getSelectionModel().getSelectedItems().size() > 1);
     }
 
     private void bindDataViewProgress() {
@@ -118,6 +151,7 @@ public class MainMenuController implements DefaultController {
 
     private void initializeTable() {
         table.setItems(fitnessList);
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         createColumns();
     }
 

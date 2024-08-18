@@ -12,6 +12,8 @@ public class NameIdConstants {
     public static final String SAVE = "global.save";
     public static final String DEFAULT_PROPERTY_ALERT_DESCRIPTION = "global.alert.description";
     public static final String DEFAULT_PROPERTY_ALERT_TITLE = "global.alert.title";
+    public static final String DEFAULT_PROPERTY_ALERT_DELETE_TITLE = "global.alert.delete.title";
+    public static final String DEFAULT_PROPERTY_ALERT_DELETE_DESCRIPTION = "global.alert.delete.description";
     public static final String DEFAULT_PROPERTY_WINDOWS_NAME = "global.property.windowsname";
     public static final String DEFAULT_PROPERTY_DESCRIPTION = "global.property.description";
     public static final String MAIN_WINDOWS_NAME = "global.main.windowsname";

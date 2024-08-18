@@ -3,6 +3,7 @@ package com.client.lesx.lesxclient.scenes.views;
 import com.client.lesx.lesxclient.scenes.views.objects.Fitness;
 import com.client.lesx.lesxclient.scenes.views.objects.SmokeJournal;
 import com.client.lesx.lesxclient.scenes.views.objects.StickyNotes;
+import com.client.lesx.lesxclient.tasks.fitness.DeleteFitnessTask;
 import com.client.lesx.lesxclient.tasks.fitness.GetFitnessListTask;
 import com.client.lesx.lesxclient.tasks.fitness.SaveFitnessTask;
 import com.client.lesx.lesxclient.tasks.fitness.UpdateFitnessTask;
@@ -85,6 +86,21 @@ public class DataViews {
         instance.stringPropertyProperty().bind(task.messageProperty());
         task.run();
         return fitness;
+    }
+
+    public static void deleteFitnessByIds(List<Integer> ids, Consumer<Boolean> onSave) {
+        instance.doublePropertyProperty().unbind();
+        instance.stringPropertyProperty().unbind();
+        Consumer<Boolean> onSuccess = (deleted) -> {
+            if(deleted) {
+                fitnessList.removeIf(current -> ids.contains(current.getId()));
+            }
+            onSave.accept(deleted);
+        };
+        DeleteFitnessTask task = new DeleteFitnessTask(ids, onSuccess);
+        instance.doublePropertyProperty().bind(task.progressProperty());
+        instance.stringPropertyProperty().bind(task.messageProperty());
+        task.run();
     }
 
     public DoubleProperty doublePropertyProperty() {
