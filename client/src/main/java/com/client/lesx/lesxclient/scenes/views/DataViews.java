@@ -59,14 +59,14 @@ public class DataViews {
         task.run();
     }
 
-    public static void saveFitnessValue(Fitness fitness, Consumer<List<Fitness>> afterSuccess) {
+    public static void saveFitnessValue(Fitness fitness, Consumer<Fitness> afterSuccess) {
         instance.doublePropertyProperty().unbind();
         instance.stringPropertyProperty().unbind();
-        Consumer<List<Fitness>> onSuccess = (saved) -> {
-            fitnessList.addAll(saved);
+        Consumer<Fitness> onSuccess = (saved) -> {
+            fitnessList.add(saved);
             afterSuccess.accept(saved);
         };
-        SaveFitnessTask task = new SaveFitnessTask(onSuccess, List.of(fitness));
+        SaveFitnessTask task = new SaveFitnessTask(onSuccess, fitness);
         instance.doublePropertyProperty().bind(task.progressProperty());
         instance.stringPropertyProperty().bind(task.messageProperty());
         task.run();
@@ -75,7 +75,12 @@ public class DataViews {
     public static Fitness updateFitnessValue(Fitness fitness, Consumer<Fitness> onSave) {
         instance.doublePropertyProperty().unbind();
         instance.stringPropertyProperty().unbind();
-        UpdateFitnessTask task = new UpdateFitnessTask(onSave, fitness);
+        Consumer<Fitness> onSuccess = (updated) -> {
+            fitnessList.removeIf(current -> current.getId().equals(updated.getId()));
+            fitnessList.add(updated);
+            onSave.accept(updated);
+        };
+        UpdateFitnessTask task = new UpdateFitnessTask(onSuccess, fitness);
         instance.doublePropertyProperty().bind(task.progressProperty());
         instance.stringPropertyProperty().bind(task.messageProperty());
         task.run();

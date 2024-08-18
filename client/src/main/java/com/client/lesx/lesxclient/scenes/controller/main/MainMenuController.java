@@ -55,6 +55,16 @@ public class MainMenuController implements DefaultController {
 
     private void addListenerToMenuItems() {
         edit.setOnAction(action -> updateFitnessObject());
+        add.setOnAction(action -> addNewFitnessObject());
+    }
+
+    private void addNewFitnessObject() {
+        SceneUtils.showPropertyDialog(new FitnessModel()
+                        .getAsFitnessItem()
+                        .getAllProperties(),
+                EActions.CREATE,
+                EModelItems.FITNESS,
+                items -> convertAndSave(items));
     }
 
     private void updateFitnessObject() {
@@ -62,16 +72,21 @@ public class MainMenuController implements DefaultController {
                         .getSelectedItem()
                         .getAsFitnessItem()
                         .getAllProperties(), EActions.UPDATE, EModelItems.FITNESS,
-                items -> convertAndSave(items));
+                items -> convertAndUpdate(items));
     }
 
     private void convertAndSave(List<PropertySheet.Item> items) {
+        Fitness fitnessItem = convertFitnessFromItemsToDao(items);
+        DataViews.saveFitnessValue(fitnessItem, fitness -> fitnessList.add(new FitnessModel(fitness)));
+    }
+
+    private void convertAndUpdate(List<PropertySheet.Item> items) {
         Fitness fitnessItem = convertFitnessFromItemsToDao(items);
         DataViews.updateFitnessValue(fitnessItem, fitness -> updateFitnessInTable(fitness));
     }
 
     private void updateFitnessInTable(Fitness fitness) {
-        FitnessModel fitnessModel = table.getItems().stream()
+        FitnessModel fitnessModel = fitnessList.stream()
                 .filter(item -> item.getId().equals(fitness.getId()))
                 .findAny()
                 .orElse(null);
