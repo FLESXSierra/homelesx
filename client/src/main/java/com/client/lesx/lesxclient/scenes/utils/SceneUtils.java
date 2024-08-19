@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.PropertySheet;
 
@@ -62,6 +63,9 @@ public class SceneUtils {
             stage.initModality(Modality.WINDOW_MODAL);
             stage.sizeToScene();
             stage.show();
+            stage.getScene()
+                    .getWindow()
+                    .addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, controller::onCloseEvent);
             controller.getCloseProperty().addListener((obs, oldV, newV) -> {
                 if(newV){
                     stage.close();

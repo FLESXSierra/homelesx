@@ -12,6 +12,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.PropertySheet;
 
@@ -92,6 +94,11 @@ public class PropertySheetController implements DefaultController {
         return closeProperty;
     }
 
+    @Override
+    public void onCloseEvent(WindowEvent onCloseEvent) {
+        closeDialogEvent(onCloseEvent);
+    }
+
     private void saveAction() {
         if (onSaveConsumer != null) {
             onSaveConsumer.accept(propertySheet.getItems());
@@ -101,29 +108,42 @@ public class PropertySheetController implements DefaultController {
         closeProperty.setValue(true);
     }
 
-    private void closeDialog() {
+    private void closeDialogEvent(WindowEvent onCloseEvent) {
         if (dirtyProperty.get()) {
             ButtonType save = new ButtonType(NamesMapUtils.getStringValueFromMap(SAVE));
+            ButtonType dontSave = new ButtonType(NamesMapUtils.getStringValueFromMap(DONT_SAVE));
             ButtonType cancel = new ButtonType(NamesMapUtils.getStringValueFromMap(CANCEL));
             Alert alert = new Alert(Alert.AlertType.WARNING);
+            Window window = alert.getDialogPane().getScene().getWindow();
+            window.setOnCloseRequest(e -> alert.hide());
             alert.setTitle(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_TITLE));
             alert.setHeaderText(String.format(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_DESCRIPTION), fromItem.toString()));
             alert.getButtonTypes()
                     .clear();
             alert.getButtonTypes()
-                    .addAll(save, cancel);
+                    .addAll(save, dontSave, cancel);
             ButtonType result = alert.showAndWait()
                     .orElse(null);
             if (cancel.equals(result)) {
+                if(onCloseEvent != null) {
+                    onCloseEvent.consume();
+                }
                 return;
             }
-            if (onSaveConsumer != null) {
-                onSaveConsumer.accept(propertySheet.getItems());
-            } else {
-                log.warn("No Save Consumer was set in properties for {}, so there is no execute in save changes.", fromItem);
+            if (save.equals(result)) {
+                if (onSaveConsumer != null) {
+                    onSaveConsumer.accept(propertySheet.getItems());
+                    dirtyProperty.set(false);
+                } else {
+                    log.warn("No Save Consumer was set in properties for {}, so there is no execute in save changes.", fromItem);
+                }
             }
         }
         closeProperty.setValue(true);
+    }
+
+    private void closeDialog() {
+        closeDialogEvent(null);
     }
 
     private void addListenerToItemsForChangeTrack(List<PropertySheet.Item> items) {
