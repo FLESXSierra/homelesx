@@ -15,6 +15,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.PropertySheet;
 
@@ -88,6 +90,8 @@ public class MainMenuController implements DefaultController {
         ButtonType ok = new ButtonType(NamesMapUtils.getStringValueFromMap(OK));
         ButtonType cancel = new ButtonType(NamesMapUtils.getStringValueFromMap(CANCEL));
         Alert alert = new Alert(Alert.AlertType.WARNING);
+        Window window = alert.getDialogPane().getScene().getWindow();
+        window.setOnCloseRequest(e -> alert.hide());
         alert.setTitle(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_DELETE_TITLE));
         alert.setHeaderText(String.format(NamesMapUtils.getStringValueFromMap(DEFAULT_PROPERTY_ALERT_DELETE_DESCRIPTION), EModelItems.FITNESS, ids));
         alert.getButtonTypes()
@@ -186,5 +190,10 @@ public class MainMenuController implements DefaultController {
     @Override
     public BooleanProperty getCloseProperty() {
         return new SimpleBooleanProperty();
+    }
+
+    @Override
+    public void onCloseEvent(WindowEvent onCloseEvent) {
+        // Do nothing Maybe add Alert?
     }
 }

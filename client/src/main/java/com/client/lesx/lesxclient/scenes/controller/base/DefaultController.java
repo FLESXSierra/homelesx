@@ -2,6 +2,7 @@ package com.client.lesx.lesxclient.scenes.controller.base;
 
 import com.client.lesx.lesxclient.constants.EControllerConstants;
 import javafx.beans.property.BooleanProperty;
+import javafx.stage.WindowEvent;
 
 public interface DefaultController {
 
@@ -14,4 +15,6 @@ public interface DefaultController {
     }
 
     BooleanProperty getCloseProperty();
+
+    void onCloseEvent(WindowEvent onCloseEvent);
 }

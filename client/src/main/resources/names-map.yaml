@@ -1,6 +1,7 @@
 global.ok: "Ok"
 global.cancel: "Cancel"
 global.save: "Save"
+global.dont-save: "Don't Save"
 global.id: "id"
 global.id-desc: "Id from Database"
 global.alert.description: "Esta seguro de salir sin realizar los cambios al objeto %s ?"

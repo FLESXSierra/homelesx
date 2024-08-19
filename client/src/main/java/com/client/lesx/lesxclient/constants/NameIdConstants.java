@@ -10,6 +10,7 @@ public class NameIdConstants {
     public static final String ID = "global.id";
     public static final String ID_DESCRIPTION = "global.id-desc";
     public static final String SAVE = "global.save";
+    public static final String DONT_SAVE = "global.dont-save";
     public static final String DEFAULT_PROPERTY_ALERT_DESCRIPTION = "global.alert.description";
     public static final String DEFAULT_PROPERTY_ALERT_TITLE = "global.alert.title";
     public static final String DEFAULT_PROPERTY_ALERT_DELETE_TITLE = "global.alert.delete.title";
