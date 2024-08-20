@@ -24,6 +24,11 @@
               <MenuItem fx:id="delete" mnemonicParsing="false" text="Delete" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Visuals">
+              <items>
+                <MenuItem fx:id="graph" mnemonicParsing="false" text="Graph" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
