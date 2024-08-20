@@ -11,12 +11,18 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class DataViews {
+
+    private static final Integer ALL_ITEMS = -1;
 
     private static List<Fitness> fitnessList;
     private static List<SmokeJournal> smokeJournalList;
@@ -101,6 +107,25 @@ public class DataViews {
         instance.doublePropertyProperty().bind(task.progressProperty());
         instance.stringPropertyProperty().bind(task.messageProperty());
         task.run();
+    }
+
+    public static ObservableList<Integer> getFitnessYearsAsList() {
+        List<Integer> years = fitnessList.stream()
+                .map(Fitness::getDate)
+                .map(LocalDate::getYear)
+                .distinct()
+                .collect(Collectors.toList());
+        return FXCollections.observableList(years);
+    }
+
+    public static ObservableList<Integer> getFitnessMonthOfYear(Integer year) {
+        List<Integer> months = fitnessList.stream()
+                .map(Fitness::getDate)
+                .filter(date -> ALL_ITEMS.equals(year) || date.getYear() == year)
+                .map(LocalDate::getMonthValue)
+                .distinct()
+                .collect(Collectors.toList());
+        return FXCollections.observableList(months);
     }
 
     public DoubleProperty doublePropertyProperty() {

@@ -18,8 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.client.lesx.lesxclient.constants.EControllerSceneFX.MAIN_MENU;
-import static com.client.lesx.lesxclient.constants.EControllerSceneFX.PROPERTY_SHEETS;
+import static com.client.lesx.lesxclient.constants.EControllerSceneFX.*;
 
 @Log4j2
 public class SceneUtils {
@@ -73,6 +72,25 @@ public class SceneUtils {
             });
         } catch (IOException e) {
             log.error("Error while loading property dialog window", e);
+        }
+    }
+
+    public static void showGraph(EModelItems fromItem) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource(GRAPH_VIEW.getFileName()));
+            Pane root = fxmlLoader.load();
+            Stage stage = new Stage();
+            DefaultController controller = fxmlLoader.getController();
+            controller.setProperty(EControllerConstants.FROM_ITEM, fromItem);
+            controller.afterInitialize();
+            stage.setTitle(controller.getWindowsName());
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.sizeToScene();
+            stage.show();
+
+        } catch (IOException e) {
+            log.error("Error while loading Graph window", e);
         }
     }
 }

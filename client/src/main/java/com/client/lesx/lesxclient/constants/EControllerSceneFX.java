@@ -18,6 +18,12 @@ public enum EControllerSceneFX {
         public String getFileName() {
             return "property_view.fxml";
         }
+    },
+    GRAPH_VIEW {
+        @Override
+        public String getFileName() {
+            return "graph_view.fxml";
+        }
     };
 
     public abstract String getFileName();

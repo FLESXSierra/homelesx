@@ -44,6 +44,8 @@ public class MainMenuController implements DefaultController {
     public MenuItem edit;
     @FXML
     public MenuItem delete;
+    @FXML
+    public MenuItem graph;
 
     private static ObservableList<FitnessModel> fitnessList = FXCollections.observableArrayList();
     private BooleanProperty isItemInTableSelected = new SimpleBooleanProperty(Boolean.FALSE, "isItemInTableSelected");
@@ -62,6 +64,11 @@ public class MainMenuController implements DefaultController {
         edit.setOnAction(action -> updateFitnessObject());
         add.setOnAction(action -> addNewFitnessObject());
         delete.setOnAction(action -> deleteFitnessObject());
+        graph.setOnAction(action -> openGraph());
+    }
+
+    private void openGraph() {
+        SceneUtils.showGraph(EModelItems.FITNESS);
     }
 
     private void addNewFitnessObject() {
